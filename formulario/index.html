@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de contacto · Captación de leads con IA</title>
+  <style>
+    :root {
+      --bg: #050816; --card: #0B1224; --border: rgba(255,255,255,.09);
+      --text: #F5F7FA; --text-2: #AEB8C5; --text-3: #7C8796;
+      --accent: #6EA8FF; --ok: #34D399; --error: #FCA5A5; --radius: 16px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root { --bg: #F4F6FA; --card: #FFFFFF; --border: rgba(10,20,40,.12); --text: #0B1224; --text-2: #3D4757; --text-3: #6B7585; --accent: #2F6FE0; --ok: #0E9F6E; --error: #C53030; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .card { width: 100%; max-width: 640px; padding: 28px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--border); }
+    h1 { font-size: 1.5rem; margin: 0 0 4px; }
+    .sub { color: var(--text-2); margin: 0 0 24px; }
+    form { display: grid; gap: 16px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label, legend { font-size: .9rem; font-weight: 600; }
+    .opt { color: var(--text-3); font-weight: 400; }
+    input[type=text], select { font: inherit; color: inherit; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); }
+    input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    legend { padding: 0; margin-bottom: 8px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+    .check { display: flex; gap: 8px; align-items: flex-start; font-size: .9rem; color: var(--text-2); cursor: pointer; }
+    .check input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+    .check a { color: var(--accent); }
+    .error { font-size: .8rem; color: var(--error); }
+    .error:empty { display: none; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    button { font: inherit; font-weight: 600; padding: 13px; border: 0; border-radius: 999px; background: var(--accent); color: #05101F; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: wait; }
+    .status { font-size: .9rem; color: var(--error); margin: 0; }
+    .status:empty { display: none; }
+    .done { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+    .done-icon { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); border: 1px solid color-mix(in srgb, var(--ok) 35%, transparent); }
+    .done-title { font-size: 1.5rem; font-weight: 700; margin: 0; }
+    .done p { margin: 0; color: var(--text-2); max-width: 380px; }
+    .done .note { font-size: .85rem; color: var(--text-3); }
+    @media (max-width: 560px) { .row, .grid { grid-template-columns: 1fr; } .card { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Hablemos de tu negocio</h1>
+    <p class="sub">Cuéntame qué te gustaría implantar y te respondo en menos de 24 horas.</p>
+
+    <form id="leadForm" novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="fNombre">Nombre *</label>
+          <input id="fNombre" name="nombre" type="text" autocomplete="name" required>
+          <span class="error"></span>
+        </div>
+        <div class="field">
+          <label for="fNegocio">Negocio *</label>
+          <input id="fNegocio" name="negocio" type="text" autocomplete="organization" required>
+          <span class="error"></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fSector">Sector *</label>
+        <select id="fSector" name="sector" required>
+          <option value="">Elige uno</option>
+          <option>Fisioterapia</option>
+          <option>Clínica dental</option>
+          <option>Gimnasio / Centro deportivo</option>
+          <option>Estética / Peluquería</option>
+          <option>Otra clínica o consulta</option>
+          <option>Otro</option>
+        </select>
+        <span class="error"></span>
+      </div>
+
+      <div class="field">
+        <label for="fContacto">Email o teléfono *</label>
+        <input id="fContacto" name="contacto" type="text" autocomplete="email" required>
+        <span class="error"></span>
+      </div>
+
+      <!-- Los valores son un contrato con el workflow: n8n solo acepta estos 8 textos exactos. -->
+      <fieldset id="fServicios">
+        <legend>¿Qué te gustaría implantar? * <span class="opt">(puedes marcar varias)</span></legend>
+        <div class="grid">
+          <label class="check"><input type="checkbox" name="servicios" value="Página web"><span>Página web</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Reservas online y recordatorios"><span>Reservas online y recordatorios</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Agente de WhatsApp con IA"><span>Agente de WhatsApp con IA</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Agente de llamadas automático"><span>Agente de llamadas automático</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Chat con IA en la web"><span>Chat con IA en la web</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Petición de reseñas en Google"><span>Petición de reseñas en Google</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Seguimiento y reactivación de clientes"><span>Seguimiento y reactivación de clientes</span></label>
+          <label class="check"><input type="checkbox" name="servicios" value="Aún no lo sé: quiero asesoramiento"><span>Aún no lo sé: quiero asesoramiento</span></label>
+        </div>
+        <span class="error" id="fServiciosErr"></span>
+      </fieldset>
+
+      <label class="check">
+        <input type="checkbox" id="fPrivacidad" name="privacidad" required>
+        <span>Acepto la <a href="#" target="_blank">política de privacidad</a> *</span>
+      </label>
+      <span class="error" id="fPrivacidadErr"></span>
+
+      <!-- Antispam: los humanos no lo ven; si llega relleno, n8n descarta el envío. -->
+      <div class="hp" aria-hidden="true">
+        <label for="fWebsite">No rellenes este campo</label>
+        <input id="fWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" id="fEnviar">Enviar</button>
+      <p class="status" id="fEstado" role="status"></p>
+    </form>
+  </main>
+
+  <script>
+    // Configuración: URL de producción del webhook de n8n y email de respaldo si falla el envío.
+    var WEBHOOK_URL = 'https://tu-n8n.es/webhook/lead-web';
+    var EMAIL_RESPALDO = 'hola@tu-dominio.es';
+
+    (function () {
+      var form = document.getElementById('leadForm');
+      var btn = document.getElementById('fEnviar');
+      var estado = document.getElementById('fEstado');
+
+      function setErr(input, errEl, msg) {
+        errEl.textContent = msg || '';
+        input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        return !msg;
+      }
+
+      function validar() {
+        var primero = null;
+        [
+          ['fNombre', function (v) { return v.length >= 2 ? '' : 'Escribe tu nombre'; }],
+          ['fNegocio', function (v) { return v ? '' : 'Escribe el nombre de tu negocio'; }],
+          ['fSector', function (v) { return v ? '' : 'Elige un sector'; }],
+          ['fContacto', function (v) {
+            var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+            var tel = v.replace(/\D/g, '').length >= 9;
+            return email || tel ? '' : 'Escribe un email o teléfono válido';
+          }]
+        ].forEach(function (r) {
+          var input = document.getElementById(r[0]);
+          var err = input.parentElement.querySelector('.error');
+          if (!setErr(input, err, r[1](input.value.trim())) && !primero) primero = input;
+        });
+        var servicios = Array.prototype.slice.call(form.querySelectorAll('input[name="servicios"]'));
+        var alguno = servicios.some(function (c) { return c.checked; });
+        document.getElementById('fServiciosErr').textContent = alguno ? '' : 'Marca al menos una opción';
+        if (!alguno && !primero) primero = servicios[0];
+        var priv = document.getElementById('fPrivacidad');
+        if (!setErr(priv, document.getElementById('fPrivacidadErr'), priv.checked ? '' : 'Necesito tu consentimiento para responderte') && !primero) primero = priv;
+        if (primero) primero.focus();
+        return !primero;
+      }
+
+      function panelEnviado(mensaje, conEmail) {
+        var done = document.createElement('div');
+        done.className = 'done';
+        done.setAttribute('role', 'status');
+        done.style.minHeight = form.offsetHeight + 'px';   // la tarjeta no encoge al enviar
+        done.innerHTML = '<span class="done-icon" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p class="done-title">¡Mensaje enviado!</p>';
+        var p = document.createElement('p');
+        p.textContent = mensaje;
+        done.appendChild(p);
+        if (conEmail) {
+          var n = document.createElement('p');
+          n.className = 'note';
+          n.textContent = 'Te he enviado un email de confirmación. Si no lo ves, revisa la carpeta de spam.';
+          done.appendChild(n);
+        }
+        form.replaceWith(done);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        estado.textContent = '';
+        if (!validar()) return;
+
+        var fd = new FormData(form);
+        var data = {};
+        fd.forEach(function (v, k) { if (k !== 'servicios') data[k] = v; });
+        data.servicios = fd.getAll('servicios');   // todas las casillas marcadas, como lista
+
+        btn.disabled = true;
+        btn.textContent = 'Enviando…';
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        }).then(function (json) {
+          if (!json || !json.ok) throw new Error('Respuesta no válida');
+          panelEnviado(json.mensaje || 'Gracias, te contactaremos en menos de 24 horas.', data.contacto.indexOf('@') !== -1);
+        }).catch(function () {
+          estado.textContent = 'No se pudo enviar. Escríbeme a ' + EMAIL_RESPALDO + '.';
+          btn.disabled = false;
+          btn.textContent = 'Enviar';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
